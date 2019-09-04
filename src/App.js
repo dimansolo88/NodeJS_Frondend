@@ -1,56 +1,57 @@
 import React, {useEffect, useState} from 'react';
 import './App.css';
-import  axios from 'axios'
+import axios from 'axios'
 
 function App() {
 
-  const [users, setUsers] = useState([]);
+    const userNameRef = React.createRef();
 
-  const getUsers = () => {
-    axios.get("http://localhost:7742/users").then(response => {
-          setUsers(response.data)
-        }
+    const [users, setUsers] = useState([]);
 
-    )
+    const getUsers = () => {
 
-  }
+        axios.get("http://localhost:7743/users").then(response => {
+                setUsers(response.data)
+            }
+        )
 
-  useEffect( () => {
+    }
 
-    getUsers()
+    useEffect(() => {
 
-
-
-  }, [] );
+        getUsers()
 
 
-  const addNewUser = () => {
-
-    axios.post("http://localhost:7742/users")
-        .then(response => {
-      getUsers()
-        }
-
-    )
-  };
+    }, []);
 
 
+    const addNewUser = () => {
 
-  return (
+        axios.post("http://localhost:7743/users", {data:userNameRef.current.value })
+            .then(response => {
+                    getUsers()
+                }
+            )
+    };
 
-      <div>
+
+    return (
 
         <div>
 
-          <button onClick={addNewUser}> add new </button>
+            <input type="text" ref={userNameRef}/>
 
+            <div>
+
+                <button onClick={addNewUser}> add new</button>
+
+            </div>
+            {users.map(u =>
+                <div>{u.name}</div>
+            )}
         </div>
-        {users.map(u =>
-          <div>{u.name}</div>
-        )}
-      </div>
 
-  );
+    );
 }
 
 export default App;
